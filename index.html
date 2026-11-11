@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic ID & Profile Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e293b;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        /* --- FORM STYLES --- */
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .form-container h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        /* --- DISPLAY AREA --- */
+        .display-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* --- DASHBOARD MODAL MOCKUP --- */
+        .dashboard-modal {
+            width: 700px;
+            background-color: #0b1320;
+            border: 2px solid #ca8a04;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            color: white;
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #0b1320, #ca8a04 50%, #0b1320);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .modal-content {
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .profile-details {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .profile-details strong {
+            color: #cbd5e1;
+        }
+
+        .photo-box {
+            width: 120px;
+            height: 140px;
+            border: 2px solid #ca8a04;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #1e293b;
+            position: relative;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .verified-badge {
+            background: #10b981;
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .payment-section {
+            background: #111c2e;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .highlight-text {
+            color: #ca8a04;
+            font-weight: bold;
+        }
+
+        /* --- ID CARD MOCKUP --- */
+        .id-card {
+            width: 600px;
+            height: 350px;
+            background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .id-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(120deg, transparent 40%, rgba(0,0,0,0.1) 45%, transparent 50%);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+
+        .logo-area {
+            font-size: 24px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-area span { font-size: 14px; letter-spacing: 2px; font-weight: 600;}
+
+        .card-type {
+            text-align: right;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .card-body {
+            display: flex;
+            padding: 20px 25px;
+            gap: 20px;
+            flex: 1;
+            z-index: 1;
+        }
+
+        .card-photo {
+            width: 130px;
+            height: 160px;
+            border: 3px solid #000;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ccc;
+        }
+
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .icon-box {
+            background: #000;
+            color: #facc15;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .card-footer {
+            background: #000;
+            color: #facc15;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .card-name {
+            font-size: 22px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .card-expiry {
+            text-align: right;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .card-expiry span {
+            display: block;
+            font-size: 10px;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- FORM SECTION -->
+    <div class="form-container">
+        <h2>Enter Details</h2>
+        
+        <div class="input-group">
+            <label>Profile Photo</label>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="nameInput" value="Rahel Fitwi">
+        </div>
+        <div class="input-group">
+            <label>Member ID</label>
+            <input type="text" id="memberIdInput" value="UV20240901">
+        </div>
+        <div class="input-group">
+            <label>Membership Type</label>
+            <input type="text" id="typeInput" value="Capital Member">
+        </div>
+        <div class="input-group">
+            <label>Country</label>
+            <input type="text" id="countryInput" value="Fiji Islands">
+        </div>
+        <div class="input-group">
+            <label>Expiry Date</label>
+            <input type="text" id="expiryInput" value="31 DEC 2028">
+        </div>
+        
+        <h2 style="margin-top: 25px;">Payment / Upgrade</h2>
+        <div class="input-group">
+            <label>Upgrade Target (Amount)</label>
+            <input type="text" id="upgradeInput" value="110,000">
+        </div>
+        <div class="input-group">
+            <label>Payment Required</label>
+            <input type="text" id="paymentInput" value="($650)">
+        </div>
+        <div class="input-group">
+            <label>Amount Credited</label>
+            <input type="text" id="creditInput" value="$2,500">
+        </div>
+    </div>
+
+    <!-- DISPLAY SECTION -->
+    <div class="display-area">
+        
+        <!-- Dashboard Modal Mockup -->
+        <div class="dashboard-modal">
+            <div class="modal-header">
+                <span>UV UNIONVEST CAPITAL</span>
+                <span>&times;</span>
+            </div>
+            <div class="modal-content">
+                <div class="profile-details">
+                    <p style="margin-top:0;"><strong>Member Details</strong></p>
+                    <div>👤 Full Name &nbsp;&nbsp;&nbsp;: <span id="display-name">Rahel Fitwi</span></div>
+                    <div>🆔 Member ID &nbsp;&nbsp;: <span id="display-id">UV20240901</span></div>
+                    <div>👑 Type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span id="display-type">Capital Member</span></div>
+                    <div>🌍 Country &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span id="display-country">Fiji Islands</span></div>
+                    
+                    <div class="payment-section">
+                        Payment Processing: (Due to low cash in the system that you have to upgrade your cash to <span id="display-upgrade" class="highlight-text">110,000</span>)<br><br>
+                        Make the payment of <span id="display-payment" class="highlight-text">($650)</span> and you will be credited <span id="display-credit" class="highlight-text">$2,500</span> immediately.
+                    </div>
+                </div>
+                <div class="photo-box">
+                    <img id="display-photo" src="https://via.placeholder.com/150" alt="Profile">
+                    <div class="verified-badge">✓ VERIFIED</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ID Card Mockup -->
+        <div class="id-card">
+            <div class="card-header">
+                <div class="logo-area">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="black"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    UNIONVEST<br><span>C A P I T A L</span>
+                </div>
+                <div class="card-type">
+                    MEMBERSHIP CARD<br>INVEST • GROW • BUILD
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-photo">
+                    <img id="card-photo" src="https://via.placeholder.com/150" alt="Profile">
+                </div>
+                <div class="card-info">
+                    <div class="info-row">
+                        <div class="icon-box">👤</div>
+                        <div>MEMBER ID:<br><span id="card-id">UV20240901</span></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="icon-box">👑</div>
+                        <div>MEMBERSHIP TYPE:<br><span id="card-type">CAPITAL MEMBER</span></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="icon-box">🌍</div>
+                        <div>COUNTRY:<br><span id="card-country">Fiji Islands</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-name" id="card-name">RAHEL FITWI</div>
+                <div class="card-expiry">
+                    <span>EXPIRY DATE:</span>
+                    <div id="card-expiry">31 DEC 2028</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT TO MAKE IT WORK -->
+    <script>
+        // Get references to inputs and display elements
+        const inputs = {
+            name: document.getElementById('nameInput'),
+            id: document.getElementById('memberIdInput'),
+            type: document.getElementById('typeInput'),
+            country: document.getElementById('countryInput'),
+            expiry: document.getElementById('expiryInput'),
+            upgrade: document.getElementById('upgradeInput'),
+            payment: document.getElementById('paymentInput'),
+            credit: document.getElementById('creditInput'),
+            image: document.getElementById('imageInput')
+        };
+
+        const displays = {
+            name: [document.getElementById('display-name'), document.getElementById('card-name')],
+            id: [document.getElementById('display-id'), document.getElementById('card-id')],
+            type: [document.getElementById('display-type'), document.getElementById('card-type')],
+            country: [document.getElementById('display-country'), document.getElementById('card-country')],
+            expiry: [document.getElementById('card-expiry')],
+            upgrade: [document.getElementById('display-upgrade')],
+            payment: [document.getElementById('display-payment')],
+            credit: [document.getElementById('display-credit')],
+            photo: [document.getElementById('display-photo'), document.getElementById('card-photo')]
+        };
+
+        // Function to update text on the mockups
+        function updateDisplay() {
+            // Update text elements
+            displays.name.forEach(el => el.innerText = inputs.name.value || "NAME");
+            displays.id.forEach(el => el.innerText = inputs.id.value || "ID");
+            displays.type.forEach(el => el.innerText = inputs.type.value.toUpperCase() || "TYPE");
+            displays.country.forEach(el => el.innerText = inputs.country.value || "COUNTRY");
+            displays.expiry.forEach(el => el.innerText = inputs.expiry.value || "DATE");
+            
+            displays.upgrade.forEach(el => el.innerText = inputs.upgrade.value || "0");
+            displays.payment.forEach(el => el.innerText = inputs.payment.value || "($0)");
+            displays.credit.forEach(el => el.innerText = inputs.credit.value || "$0");
+        }
+
+        // Add event listeners to all text inputs
+        Object.keys(inputs).forEach(key => {
+            if (key !== 'image') {
+                inputs[key].addEventListener('input', updateDisplay);
+            }
+        });
+
+        // Handle Image Upload
+        inputs.image.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    displays.photo.forEach(el => el.src = event.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Initial run to populate defaults
+        updateDisplay();
+    </script>
+</body>
+                          </html>
